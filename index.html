@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B1420">
+<title>CloutGPT | Enter the Arena</title>
+<style>
+:root{--bg:#0B1420;--panel:#101F2D;--ice:#A8E8FF;--white:#E8F8FF;--muted:#91A7B8;--line:#294354}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#1a3549 0%,var(--bg) 48%);color:var(--white);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+header{padding:18px 5%;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:#0b1420e8;position:sticky;top:0;z-index:3}
+.logo{font-size:23px;font-weight:1000;letter-spacing:-1px}.logo span,h1 span{color:var(--ice)}
+.badge{border:1px solid #42677b;border-radius:20px;padding:8px 11px;font-size:11px;color:var(--ice)}
+main{max-width:1100px;margin:auto;padding:25px 18px 55px}
+.eyebrow{color:var(--ice);font-size:11px;font-weight:bold;letter-spacing:3px}
+h1{font-size:clamp(42px,8vw,70px);line-height:.98;letter-spacing:-3px;margin:13px 0}
+.intro{color:var(--muted);line-height:1.7;max-width:580px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:25px 0}
+.stat,.panel,.title-card,.shop-card{background:linear-gradient(145deg,#142839,#0e1a27);border:1px solid var(--line);border-radius:15px}
+.stat{padding:16px 12px;min-width:0}.stat small{display:block;color:var(--muted);font-size:11px;margin-bottom:9px}.stat strong{font-size:clamp(17px,3vw,25px);overflow-wrap:anywhere}
+.columns{display:grid;grid-template-columns:1.15fr .85fr;gap:15px}
+.panel{padding:20px;margin-bottom:15px;min-width:0}
+h2{font-size:19px;margin:0 0 10px}
+.muted{font-size:13px;color:var(--muted);line-height:1.6}
+.tag{display:inline-block;border:1px solid #3d647b;color:var(--ice);border-radius:5px;padding:5px 8px;font-size:10px;font-weight:bold;letter-spacing:1px}
+.challenge{font-size:clamp(23px,4vw,34px);font-weight:900;line-height:1.2;margin:24px 0}
+.timer{font-size:70px;font-weight:1000;letter-spacing:-4px;color:var(--ice)}
+.timer.danger{color:#ff91ad}
+.bar{height:7px;background:#243746;border-radius:10px;overflow:hidden;margin:8px 0 20px}
+.bar div{height:100%;width:100%;background:var(--ice);transition:width .15s}
+button,input{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;flex-wrap:wrap;gap:9px}
+.btn{padding:11px 14px;border-radius:9px;border:1px solid #345063;background:#193044;color:var(--white);font-weight:bold}
+.btn.primary{background:var(--ice);color:#09131d;border-color:var(--ice)}
+.btn.full{width:100%;margin-top:12px}
+video{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#070d13;border:1px solid var(--line);border-radius:10px;margin:15px 0}
+.field{width:100%;padding:12px;background:#091722;border:1px solid var(--line);color:white;border-radius:9px;margin:9px 0}
+.profile{display:flex;align-items:center;gap:13px;margin:18px 0}
+.avatar{width:55px;height:55px;border:1px solid #42677b;border-radius:13px;display:grid;place-items:center;color:var(--ice);font-size:23px;font-weight:bold;background:#193044}
+.profile-name{font-weight:900;font-size:18px;overflow-wrap:anywhere}
+.xpbar{height:8px;background:#243746;border-radius:10px;overflow:hidden;margin:10px 0}
+.xpbar div{height:100%;background:linear-gradient(90deg,#62cfff,var(--ice))}
+.notice{font-size:12px;line-height:1.6;padding:12px;background:#102a37;border:1px solid #294d60;border-radius:9px;color:#c1eaff;margin-top:12px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:28px 0 12px}
+.section-head h2{font-size:22px;margin:0}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.title-card{padding:13px;min-width:0}
+.title-card strong,.shop-card strong{display:block;margin:10px 0 6px;overflow-wrap:anywhere}
+.title-card small,.shop-card p{color:var(--muted);font-size:11px}
+.title-card button,.shop-card button{width:100%;margin-top:10px;font-size:11px;padding:9px 4px}
+.title-card.active{border-color:var(--ice)}
+.shop-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.shop-card{text-align:center;padding:13px 9px;min-width:0}
+.shop-icon{font-size:26px;color:var(--ice)}
+footer{text-align:center;border-top:1px solid var(--line);padding:24px;color:var(--muted);font-size:11px}
+#toast{position:fixed;z-index:10;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ice);color:#09131d;padding:12px 17px;border-radius:10px;font-size:13px;font-weight:bold;max-width:90%;text-align:center}
+.hidden{display:none}
+@media(max-width:720px){.columns{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}header{padding:15px}.panel{padding:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">CLOUT<span>GPT</span></div>
+  <div class="badge">❄ ARCTIC GLITCH</div>
+</header>
+
+<main>
+  <div class="eyebrow">YOUR CLOUT ERA STARTS HERE</div>
+  <h1>ENTER THE<br><span>ARENA.</span></h1>
+  <p class="intro">Take on challenges. Earn XP. Unlock titles. Climb all the way to Level 999.</p>
+
+  <div class="stats">
+    <div class="stat"><small>LEVEL</small><strong id="levelStat">1</strong></div>
+    <div class="stat"><small>CLOUT POINTS</small><strong id="pointsStat">0</strong></div>
+    <div class="stat"><small>ROUNDS PLAYED</small><strong id="roundsStat">0</strong></div>
+    <div class="stat"><small>BEST LEVEL</small><strong id="bestStat">1</strong></div>
+  </div>
+
+  <div class="columns">
+    <div>
+      <section class="panel">
+        <span class="tag">LIVE CHALLENGE</span>
+        <h2 style="margin-top:15px">The Clout Arena</h2>
+        <p class="muted">Complete the challenge before your 25 seconds run out.</p>
+        <div id="challengeText" class="challenge">Ready to prove yourself?</div>
+        <div id="timer" class="timer">25.0</div>
+        <div class="bar"><div id="timerBar"></div></div>
+        <div class="actions">
+          <button id="startBtn" class="btn primary">Start Round</button>
+          <button id="newBtn" class="btn">New Challenge</button>
+        </div>
+        <button id="completeBtn" class="btn full" disabled>Complete Challenge</button>
+        <p id="roundMessage" class="muted" aria-live="polite">Choose Start Round when you're ready.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Camera Preview</h2>
+        <p class="muted">Enable your camera if you want to use it for a challenge. This demo does not record or upload video.</p>
+        <video id="camera" autoplay muted playsinline></video>
+        <div class="actions">
+          <button id="cameraBtn" class="btn primary">Enable Camera</button>
+          <button id="cameraOffBtn" class="btn">Turn Off</button>
+        </div>
+        <p id="cameraMessage" class="muted">Camera is off.</p>
+      </section>
+    </div>
+
+    <div>
+      <section class="panel">
+        <h2>Your Profile</h2>
+        <div class="profile">
+          <div id="avatar" class="avatar">C</div>
+          <div><div id="profileName" class="profile-name">Clout Player</div><div id="equippedLabel" class="muted">Rookie</div></div>
+        </div>
+        <label for="nameInput" class="muted">Display name</label>
+        <input id="nameInput" class="field" maxlength="20" placeholder="Enter your name">
+        <button id="saveNameBtn" class="btn primary full">Save Profile</button>
+        <div class="section-head"><h2>Level Progress</h2><span id="levelLabel" class="tag">LEVEL 1</span></div>
+        <div class="xpbar"><div id="xpBar" style="width:0%"></div></div>
+        <div id="xpLabel" class="muted">0 / 100 XP</div>
+        <div class="notice">Progress is saved in this browser on this device. Clearing browser data may erase it.</div>
+      </section>
+
+      <section class="panel">
+        <h2>How to Play</h2>
+        <p class="muted">1. Start a round.<br><br>2. Try the challenge before time runs out.<br><br>3. Press Complete Challenge to claim demo rewards.<br><br>4. Level up to unlock titles and spend points in the shop.</p>
+        <div class="notice">Scoring is currently demo-based. Genuine AI evaluation needs a backend connected to an AI service.</div>
+      </section>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <h2>Level Titles</h2><span class="tag">AUTO-UNLOCK</span>
+  </div>
+  <p class="muted">Reach the required level to unlock each title for free.</p>
+  <div id="levelTitles" class="grid"></div>
+  <button id="moreTitlesBtn" class="btn full">Show All Level Titles</button>
+
+  <div class="section-head">
+    <h2>Title Shop</h2><span class="tag">600 POINTS EACH</span>
+  </div>
+  <p class="muted">Special titles are separate from level titles.</p>
+  <div id="shopGrid" class="shop-grid"></div>
+
+  <section class="panel" style="margin-top:25px">
+    <h2>Owner Access</h2>
+    <p class="muted">The Owner title and role are reserved for the site owner. This public demo does not grant Owner access to anyone. Secure ownership requires server-side account verification.</p>
+    <div class="notice">Before a full launch, CloutGPT will need secure accounts, server-side points, cross-device saves, and a real AI scoring backend. Never put passwords or secret API keys in this file.</div>
+  </section>
+</main>
+<footer>CLOUTGPT © 2026 · CHALLENGE YOURSELF</footer>
+<div id="toast" class="hidden" role="status"></div>
+
+<script>
+(() => {
+"use strict";
+
+const ROUND_SECONDS = 25;
+const REWARD_XP = 100;
+const REWARD_POINTS = 100;
+const PRICE = 600;
+
+const challenges = [
+  "Show your most confident pose.",
+  "Give a creative one-line introduction.",
+  "Make your most original facial expression.",
+  "Deliver a 10-second motivational speech.",
+  "Invent a new nickname for yourself.",
+  "Give a dramatic movie-trailer introduction.",
+  "Describe your vibe in three words.",
+  "Show off your best celebration.",
+  "Invent a funny catchphrase.",
+  "Give your best main-character entrance."
+];
+
+const levels = [
+  [1,9,"Rookie"],[10,19,"Grinder"],[20,29,"Clouted"],
+  [30,49,"Rizz"],[50,74,"Mog"],[75,99,"Rich"],
+  [100,149,"Legend"],[150,199,"Elite"],[200,249,"Champion"],
+  [250,299,"Dominator"],[300,349,"Menace"],[350,399,"Mastermind"],
+  [400,449,"Icon"],[450,499,"Mythic"],[500,549,"Overlord"],
+  [550,599,"Phantom"],[600,649,"Godlike"],[650,699,"Ascended"],
+  [700,749,"Eternal"],[750,799,"Transcendent"],[800,849,"Supreme"],
+  [850,899,"Untouchable"],[900,949,"Celestial"],[950,998,"Absolute"],
+  [999,999,"Clout God"]
+].map(([min,max,name])=>({min,max,name}));
+
+const shop = [
+  {name:"OG",icon:"✦",desc:"A certified original."},
+  {name:"Aura King",icon:"♛",desc:"Bring the aura."},
+  {name:"Menace",icon:"⚡",desc:"Built different."},
+  {name:"Celebrity",icon:"✧",desc:"Everybody knows."},
+  {name:"Mystic",icon:"❄",desc:"Cold and mysterious."}
+];
+
+const defaults = {name:"Clout Player",xp:0,points:0,rounds:0,best:1,owned:[],equipped:"Rookie"};
+
+function load(){
+  try {
+    const data=JSON.parse(localStorage.getItem("cloutgpt-v1")||"null");
+    return data ? {...defaults,...data,owned:Array.isArray(data.owned)?data.owned:[]} : {...defaults};
+  } catch {return {...defaults};}
+}
+
+let state=load();
+let remaining=ROUND_SECONDS;
+let interval=null;
+let active=false;
+let lastChallenge=-1;
+let showAll=false;
+let stream=null;
+let toastTimeout=null;
+
+const $=id=>document.getElementById(id);
+
+function levelFromXP(xp){
+  return Math.min(999,Math.max(1,Math.floor((1+Math.sqrt(1+8*Math.max(0,xp)/100))/2)));
+}
+function xpForLevel(level){return 50*(level-1)*level;}
+function titleAt(level){return levels.find(t=>level>=t.min&&level<=t.max)?.name||"Rookie";}
+function unlocked(){
+  const lvl=levelFromXP(state.xp);
+  return levels.filter(t=>lvl>=t.min).map(t=>t.name);
+}
+function save(){
+  try {localStorage.setItem("cloutgpt-v1",JSON.stringify(state));}
+  catch(e){console.warn("Unable to save browser progress.",e);}
+}
+function notify(message){
+  $("toast").textContent=message;
+  $("toast").classList.remove("hidden");
+  clearTimeout(toastTimeout);
+  toastTimeout=setTimeout(()=>$("toast").classList.add("hidden"),2500);
+}
+
+function render(){
+  const lvl=levelFromXP(state.xp);
+  state.best=Math.max(state.best||1,lvl);
+  $("levelStat").textContent=lvl.toLocaleString();
+  $("pointsStat").textContent=state.points.toLocaleString();
+  $("roundsStat").textContent=state.rounds.toLocaleString();
+  $("bestStat").textContent=state.best.toLocaleString();
+  $("profileName").textContent=state.name||"Clout Player";
+  $("avatar").textContent=(state.name||"C").trim().charAt(0).toUpperCase();
+  $("nameInput").value=state.name||"";
+  $("equippedLabel").textContent=state.equipped||titleAt(lvl);
+  $("levelLabel").textContent="LEVEL "+lvl;
+
+  if(lvl>=999){
+    $("xpLabel").textContent="MAX LEVEL REACHED · 999";
+    $("xpBar").style.width="100%";
+  }else{
+    const base=xpForLevel(lvl);
+    const next=xpForLevel(lvl+1);
+    const current=state.xp-base;
+    $("xpLabel").textContent=`${current.toLocaleString()} / ${(next-base).toLocaleString()} XP to Level ${lvl+1}`;
+    $("xpBar").style.width=Math.max(0,Math.min(100,current/(next-base)*100))+"%";
+  }
+
+  const visible=showAll?levels:levels.slice(0,9);
+  $("levelTitles").innerHTML=visible.map(t=>{
+    const available=lvl>=t.min;
+    const equipped=state.equipped===t.name;
+    return `<article class="title-card ${equipped?"active":""}">
+      <span class="tag">${available?"UNLOCKED":"LOCKED"}</span>
+      <strong>${t.name}</strong>
+      <small>${t.min===t.max?"Level "+t.min:"Levels "+t.min+"–"+t.max}</small>
+      <button class="btn ${equipped?"primary":""}" data-equip="${t.name}" ${!available||equipped?"disabled":""}>${equipped?"Equipped":available?"Equip":"Locked"}</button>
+    </article>`;
+  }).join("");
+
+  $("moreTitlesBtn").textContent=showAll?"Show Fewer Titles":"Show All Level Titles";
+
+  $("shopGrid").innerHTML=shop.map(t=>{
+    const owned=state.owned.includes(t.name);
+    const equipped=state.equipped===t.name;
+    return `<article class="shop-card">
+      <div class="shop-icon">${t.icon}</div><strong>${t.name}</strong>
+      <p>${t.desc}</p><p>${owned?"Owned":PRICE+" Clout Points"}</p>
+      <button class="btn ${equipped?"primary":""}" data-shop="${t.name}" ${equipped?"disabled":""}>${equipped?"Equipped":owned?"Equip":"Buy"}</button>
+    </article>`;
+  }).join("");
+  save();
+}
+
+function displayTimer(){
+  $("timer").textContent=remaining.toFixed(1);
+  $("timer").classList.toggle("danger",remaining<=5);
+  $("timerBar").style.width=Math.max(0,remaining/ROUND_SECONDS*100)+"%";
+}
+function stopTimer(){
+  if(interval!==null)clearInterval(interval);
+  interval=null;
+}
+function resetRound(message){
+  stopTimer();
+  active=false;
+  remaining=ROUND_SECONDS;
+  displayTimer();
+  $("startBtn").disabled=false;
+  $("completeBtn").disabled=true;
+  $("roundMessage").textContent=message||"Ready when you are. Start a new round!";
+}
+function chooseChallenge(){
+  let n=Math.floor(Math.random()*challenges.length);
+  if(challenges.length>1&&n===lastChallenge)n=(n+1)%challenges.length;
+  lastChallenge=n;
+  $("challengeText").textContent=challenges[n];
+}
+function startRound(){
+  if(active)return;
+  stopTimer();
+  remaining=ROUND_SECONDS;
+  active=true;
+  displayTimer();
+  $("startBtn").disabled=true;
+  $("completeBtn").disabled=false;
+  $("roundMessage").textContent="Round live! Complete the challenge before time runs out.";
+  interval=setInterval(()=>{
+    remaining=Math.max(0,remaining-0.1);
+    displayTimer();
+    if(remaining<=0){
+      stopTimer();
+      active=false;
+      $("startBtn").disabled=false;
+      $("completeBtn").disabled=true;
+      $("roundMessage").textContent="Time's up! Try another round.";
+      remaining=0;
+      displayTimer();
+    }
+  },100);
+}
+function completeRound(){
+  if(!active)return;
+  const oldLevel=levelFromXP(state.xp);
+  stopTimer();
+  active=false;
+  state.xp+=REWARD_XP;
+  state.points+=REWARD_POINTS;
+  state.rounds++;
+  const newLevel=levelFromXP(state.xp);
+  state.best=Math.max(state.best,newLevel);
+  $("startBtn").disabled=false;
+  $("completeBtn").disabled=true;
+  $("roundMessage").textContent=`Challenge completed! +${REWARD_XP} XP and +${REWARD_POINTS} Clout Points.`;
+  remaining=ROUND_SECONDS;
+  displayTimer();
+  render();
+  notify(newLevel>oldLevel?`LEVEL UP! You're now Level ${newLevel}!`:"Rewards claimed! +100 XP · +100 points");
+}
+function equip(name){
+  const lvl=levelFromXP(state.xp);
+  const validLevel=levels.some(t=>t.name===name&&lvl>=t.min);
+  const validShop=state.owned.includes(name);
+  if(!validLevel&&!validShop)return notify("That title isn't unlocked yet.");
+  state.equipped=name;
+  render();
+  notify(name+" equipped!");
+}
+
+$("startBtn").addEventListener("click",startRound);
+$("completeBtn").addEventListener("click",completeRound);
+$("newBtn").addEventListener("click",()=>{
+  resetRound("New challenge selected. Start when ready.");
+  chooseChallenge();
+});
+$("saveNameBtn").addEventListener("click",()=>{
+  const name=$("nameInput").value.trim().slice(0,20);
+  state.name=name||"Clout Player";
+  render();
+  notify("Profile saved on this device!");
+});
+$("moreTitlesBtn").addEventListener("click",()=>{
+  showAll=!showAll;
+  render();
+});
+$("levelTitles").addEventListener("click",e=>{
+  const button=e.target.closest("[data-equip]");
+  if(button&&!button.disabled)equip(button.dataset.equip);
+});
+$("shopGrid").addEventListener("click",e=>{
+  const button=e.target.closest("[data-shop]");
+  if(!button||button.disabled)return;
+  const name=button.dataset.shop;
+  if(state.owned.includes(name))return equip(name);
+  if(state.points<PRICE)return notify("You need "+(PRICE-state.points)+" more Clout Points!");
+  state.points-=PRICE;
+  state.owned.push(name);
+  state.equipped=name;
+  render();
+  notify(name+" purchased and equipped!");
+});
+
+$("cameraBtn").addEventListener("click",async()=>{
+  if(!navigator.mediaDevices?.getUserMedia){
+    $("cameraMessage").textContent="Camera access isn't available here. Open the published site using HTTPS in Chrome.";
+    return;
+  }
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false});
+    $("camera").srcObject=stream;
+    $("cameraMessage").textContent="Camera is on. Your video is only shown in this preview.";
+  }catch(err){
+    $("cameraMessage").textContent="Camera permission was denied or the camera is unavailable. Check Chrome's site permissions.";
+  }
+});
+$("cameraOffBtn").addEventListener("click",()=>{
+  if(stream)stream.getTracks().forEach(track=>track.stop());
+  stream=null;
+  $("camera").srcObject=null;
+  $("cameraMessage").textContent="Camera is off.";
+});
+window.addEventListener("beforeunload",()=>{
+  stopTimer();
+  if(stream)stream.getTracks().forEach(track=>track.stop());
+});
+
+chooseChallenge();
+displayTimer();
+render();
+})();
+</script>
+</body>
+</html>
